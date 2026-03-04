@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Enter Age</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin-top: 150px;
+    transition: 0.3s;
+}
+
+.light {
+    background-color: #f0f8ff;
+    color: black;
+}
+
+.dark {
+    background-color: #121212;
+    color: white;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 18px;
+    margin: 10px;
+}
+
+button {
+    background-color: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#errorMsg {
+    color: red;
+}
+</style>
+</head>
+
+<body class="light">
+
+<button onclick="toggleTheme()">🌙 Toggle Dark Mode</button>
+
+<h1>Enter Your Age</h1>
+
+<form onsubmit="validateAge(event)">
+    <input type="number" id="ageInput" placeholder="Enter your age">
+    <br>
+    <button type="submit">Submit</button>
+</form>
+
+<p id="errorMsg"></p>
+
+<script>
+
+loadTheme();
+
+function toggleTheme() {
+    var body = document.body;
+    body.classList.toggle("dark");
+    body.classList.toggle("light");
+
+    var theme = body.classList.contains("dark") ? "dark" : "light";
+    localStorage.setItem("theme", theme);
+}
+
+function loadTheme() {
+    var savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+        document.body.className = savedTheme;
+    }
+}
+
+function validateAge(event) {
+    event.preventDefault();
+
+    var age = document.getElementById("ageInput").value;
+    var error = document.getElementById("errorMsg");
+
+    if (age === "") {
+        error.innerText = "Please enter your age!";
+        return;
+    }
+
+    age = Number(age);
+
+    if (age <= 0) {
+        error.innerText = "Age must be greater than 0!";
+        return;
+    }
+
+    localStorage.setItem("userage", age);
+    window.location.href = "profile.html";
+}
+
+</script>
+
+</body>
+</html>

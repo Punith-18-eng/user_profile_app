@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Profile</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin-top: 80px;
+    transition: 0.3s;
+}
+
+.light {
+    background-color: #f0f8ff;
+    color: black;
+}
+
+.dark {
+    background-color: #121212;
+    color: white;
+}
+
+img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid gray;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.logout {
+    background-color: red;
+    color: white;
+}
+
+.upload {
+    background-color: blue;
+    color: white;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body class="light">
+
+<button onclick="toggleTheme()">🌙 Toggle Dark Mode</button>
+
+<h1>Your Profile 🎉</h1>
+
+<h2 id="displayName"></h2>
+<h3 id="displayAge"></h3>
+
+<img id="profileImage" src="" alt="Profile Photo">
+
+<br>
+
+<input type="file" id="imageUpload" accept="image/*">
+<br>
+<button class="upload" onclick="saveImage()">Upload Photo</button>
+
+<br>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+<script>
+
+loadTheme();
+
+var name = localStorage.getItem("username");
+var age = localStorage.getItem("userage");
+
+if (!name || !age) {
+    window.location.href = "index.html";
+}
+
+document.getElementById("displayName").innerText = "Name: " + name;
+document.getElementById("displayAge").innerText = "Age: " + age;
+
+var savedImage = localStorage.getItem("profileImage");
+if (savedImage) {
+    document.getElementById("profileImage").src = savedImage;
+} else {
+    document.getElementById("profileImage").src =
+        "https://via.placeholder.com/160";
+}
+
+function saveImage() {
+    var fileInput = document.getElementById("imageUpload");
+    var file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select an image first!");
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function() {
+        var imageData = reader.result;
+        localStorage.setItem("profileImage", imageData);
+        document.getElementById("profileImage").src = imageData;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function toggleTheme() {
+    var body = document.body;
+    body.classList.toggle("dark");
+    body.classList.toggle("light");
+
+    var theme = body.classList.contains("dark") ? "dark" : "light";
+    localStorage.setItem("theme", theme);
+}
+
+function loadTheme() {
+    var savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+        document.body.className = savedTheme;
+    }
+}
+
+</script>
+
+</body>
+</html>

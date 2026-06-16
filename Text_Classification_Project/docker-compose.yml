@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  flask-api:
+    build: .
+    container_name: text-classification-api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - TF_CPP_MIN_LOG_LEVEL=2
+    volumes:
+      - ./saved_models:/app/saved_models
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  streamlit-app:
+    build: .
+    container_name: text-classification-streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_PORT=8501
+      - TF_CPP_MIN_LOG_LEVEL=2
+    volumes:
+      - ./saved_models:/app/saved_models
+    command: streamlit run streamlit_app.py
+    restart: unless-stopped
+    depends_on:
+      - flask-api
+
+networks:
+  default:
+    name: text-classification-network
